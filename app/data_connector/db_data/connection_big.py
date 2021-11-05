@@ -8,7 +8,10 @@ import json
 
 
 def convert_date_to_int(value):
-    newvalue=(value.replace("-",""))
+    if value[1].isdigit():
+        newvalue=(value.replace("-",""))
+    else:
+        newvalue=value
     newvalue=(newvalue.replace("'",""))
     return (str(newvalue))
 
@@ -172,12 +175,17 @@ def card_query(dataset, field, calculate, type, filters):
         query="SELECT "+calculate+"(DISTINCT("+field+")) FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where
     else:
         query="SELECT "+calculate+"("+field+") FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where
+    print('----------------------')
+    print(query)
+    print('----------------------')
     rows=query_execute_big_query(query)
     response = {}
     response['head']='card'
-    response['data']=rows[0]['f0_']
+    if(rows[0]['f0_'] == None):
+        response['data']=0
+    else:
+        response['data']=rows[0]['f0_']
     return response
-
 
 def tab_query(dataset, columns, type, filters):
     where=filtros(filters)
