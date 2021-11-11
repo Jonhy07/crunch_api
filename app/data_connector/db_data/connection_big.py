@@ -214,6 +214,38 @@ def tab_query(dataset, columns, type, filters):
         #query+="order by id"
 
 
+
+
+def tab_front_query(dataset, columns, type, filters, length, start ):
+    where=filtros(filters)
+    query="Select"
+    if type==1:
+        groupby=""
+        for row in columns:
+            if (row.calculate):
+                query+= " "+row.calculate+"("+row.field+"),"
+            else:
+                query+= " "+row.field+","
+                groupby+= " "+row.field+","
+        query=query[:-1]
+        query+=" FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "
+        query+="  "+where
+        if groupby!="":
+            groupby=groupby[:-1]
+            query+="group by "+groupby+" "
+        query+=" LIMIT "+length
+        query+=" OFFSET  "+start
+    else:
+        for row in columns:
+            #c=c+1
+            query+=" "+row.field+","
+        query=query[:-1]
+        query+=" FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "
+        query+="  "+where
+        query+=" LIMIT "+length
+        query+=" OFFSET  "+start
+        #query+="order by id"
+
     rows = query_execute_big_query(query)
     response = {}
     response['data']=[]

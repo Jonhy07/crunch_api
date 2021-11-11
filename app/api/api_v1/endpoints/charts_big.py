@@ -1,8 +1,11 @@
 from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException, Request
-from data_connector.db_data.connection_big import simple_query, simple_nested_query, multiple_agg_query, card_query, tab_query, prueba_big
+from data_connector.db_data.connection_big import simple_query, simple_nested_query, multiple_agg_query, card_query, tab_query, tab_front_query, prueba_big
 from pydantic import BaseModel, Json
 from typing import Dict, Optional
+
+from fastapi import FastAPI
+from typing import Dict, AnyStr, Union
 
 router = APIRouter()
 
@@ -45,6 +48,15 @@ class JsonTab(BaseModel):
     columns:List[column]
     filters:List[filter]
 
+
+class JsonTab_Front(BaseModel):
+    dataset:str
+    type:Optional [int]
+    columns:List[column]
+    filters:List[filter]
+    length:int
+    start:int
+
 @router.post("/pie")
 async def im_pie(jsonBody : JsonBodyPie):
     return simple_query(jsonBody.dataset, jsonBody.x, jsonBody.y.value, jsonBody.y.calculate, jsonBody.filters)
@@ -66,6 +78,27 @@ async def im_card(jsonBody : JsonTab):
 async def im_tab(jsonBody : JsonTab):
     return tab_query(jsonBody.dataset, jsonBody.columns, jsonBody.type, jsonBody.filters)
 
+
+
+@router.post("/tab_front")
+async def im_tab_front(jsonBody : JsonTab_Front):
+    return tab_front_query(jsonBody.dataset, jsonBody.columns, jsonBody.type, jsonBody.filters,jsonBody.length, jsonBody.start )
+
+
+
 @router.get("/prueba")
 async def prueba():
     return prueba_big()
+
+
+
+JSONObject = Dict[AnyStr, Any]
+JSONArray = List[Any]
+JSONStructure = Union[JSONArray, JSONObject]
+
+
+@router.post("/tabla2")
+async def im_tab2(arbitrary_json: JSONStructure = None):
+    print('..Prueba1....')
+    print(arbitrary_json)
+    return {"received_data": arbitrary_json}
