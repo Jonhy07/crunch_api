@@ -233,8 +233,8 @@ def tab_front_query(dataset, columns, type, filters, length, start ):
         if groupby!="":
             groupby=groupby[:-1]
             query+="group by "+groupby+" "
-        query+=" LIMIT "+length
-        query+=" OFFSET  "+start
+        query+=" LIMIT "+str(length)
+        query+=" OFFSET  "+str(start)
     else:
         for row in columns:
             #c=c+1
@@ -242,8 +242,8 @@ def tab_front_query(dataset, columns, type, filters, length, start ):
         query=query[:-1]
         query+=" FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "
         query+="  "+where
-        query+=" LIMIT "+length
-        query+=" OFFSET  "+start
+        query+=" LIMIT "+str(length)
+        query+=" OFFSET  "+str(start)
         #query+="order by id"
 
     rows = query_execute_big_query(query)

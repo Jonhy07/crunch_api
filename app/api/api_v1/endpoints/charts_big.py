@@ -43,9 +43,9 @@ class JsonBody(BaseModel):
 
 
 class JsonTab(BaseModel):
-    dataset:str
-    type:Optional [int]
+    type:Optional [str]
     columns:List[column]
+    dataset:str
     filters:List[filter]
 
 
@@ -70,7 +70,7 @@ async def im_line_bar(jsonBody : JsonBody):
 
 
 @router.post("/card")
-async def im_card(jsonBody : JsonTab):
+def im_card(jsonBody : JsonTab):
     return card_query(jsonBody.dataset, jsonBody.columns[0].field, jsonBody.columns[0].calculate, jsonBody.type, jsonBody.filters)
 
 
@@ -81,7 +81,7 @@ async def im_tab(jsonBody : JsonTab):
 
 
 @router.post("/tab_front")
-async def im_tab_front(jsonBody : JsonTab_Front):
+def im_tab_front(jsonBody : JsonTab_Front):
     return tab_front_query(jsonBody.dataset, jsonBody.columns, jsonBody.type, jsonBody.filters,jsonBody.length, jsonBody.start )
 
 
