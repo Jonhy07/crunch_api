@@ -157,8 +157,8 @@ def multiple_agg_query(dataset, x, y, type_time, filters):
                 temp.append(str(row[atribut]))
                 value[n]=temp
 
-    #response['xAxis']['name'] = translate(dataset, x)
-    response['xAxis']['name'] = x
+    response['xAxis']['name'] = translate(dataset, x)
+    #response['xAxis']['name'] = x
     response['xAxis']['data'] = key
 
     c=0
