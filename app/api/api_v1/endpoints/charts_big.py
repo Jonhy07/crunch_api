@@ -63,6 +63,8 @@ async def im_pie(jsonBody : JsonBodyPie):
 
 @router.post("/line_bar")
 async def im_line_bar(jsonBody : JsonBody):
+    print(jsonBody)
+    print('/////')
     if jsonBody.type==1:
         return simple_nested_query(jsonBody.dataset, jsonBody.x, jsonBody.y[0].name, jsonBody.y[0].value, jsonBody.y[0].calculate, jsonBody.type_time, jsonBody.filters)
     else:
