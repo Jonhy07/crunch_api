@@ -34,10 +34,15 @@ def simple_query(dataset, x, value, calculate, filters):
     rows=query_execute_big_query(query)
     response['series'] = []
     value = []
+    print('.....')
     for row in rows:
+        print(row)
+#        value.append({'value':row[1], 'name':row[0]})
         value.append(row)
     response['series'].append({'name': translate(dataset, x), 'data':value}) 
-    #response['series'].append({'name': x, 'data':value})
+    #response['series'].append({'name': x, 'data':value}) 
+    print(response)
+    print('.....')
     return response
 
 
