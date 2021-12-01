@@ -1,7 +1,6 @@
 from typing import Any, List
-from app.data_connector.db_data.connection_big import simple_nested_query1
 from fastapi import APIRouter, Depends, HTTPException, Request
-from data_connector.db_data.connection_big import simple_query, simple_nested_query, multiple_agg_query, card_query, tab_query, tab_front_query, prueba_big,simple_query1
+from data_connector.db_data.connection_big import simple_query, simple_nested_query, multiple_agg_query, card_query, tab_query, tab_front_query, prueba_big,simple_query1,simple_nested_query1
 from pydantic import BaseModel, Json
 from typing import Dict, Optional
 
@@ -42,13 +41,11 @@ class JsonBody(BaseModel):
     y:List[YRow]
     filters:List[filter]
 
-
 class JsonTab(BaseModel):
     type:Optional [str]
     columns:List[column]
     dataset:str
     filters:List[filter]
-
 
 class JsonTab_Front(BaseModel):
     dataset:str
