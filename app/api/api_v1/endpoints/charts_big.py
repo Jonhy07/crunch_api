@@ -1,4 +1,5 @@
 from typing import Any, List
+from app.data_connector.db_data.connection_big import simple_nested_query1
 from fastapi import APIRouter, Depends, HTTPException, Request
 from data_connector.db_data.connection_big import simple_query, simple_nested_query, multiple_agg_query, card_query, tab_query, tab_front_query, prueba_big,simple_query1
 from pydantic import BaseModel, Json
@@ -64,7 +65,7 @@ async def im_pie(jsonBody : JsonBodyPie):
 @router.post("/line_bar")
 async def im_line_bar(jsonBody : JsonBody):
     if jsonBody.type==1:
-        return simple_nested_query(jsonBody.dataset, jsonBody.x, jsonBody.y[0].name, jsonBody.y[0].value, jsonBody.y[0].calculate, jsonBody.type_time, jsonBody.filters)
+        return simple_nested_query1(jsonBody.dataset, jsonBody.x, jsonBody.y[0].name, jsonBody.y[0].value, jsonBody.y[0].calculate, jsonBody.type_time, jsonBody.filters)
     else:
         return multiple_agg_query(jsonBody.dataset, jsonBody.x,  jsonBody.y, jsonBody.type_time, jsonBody.filters)
 

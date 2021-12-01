@@ -117,6 +117,74 @@ def simple_nested_query(dataset, x, legend,  value, calculate, type_time, filter
         response['series'].append({"name":name, "data":list(map(float, list1[:-1].split(',') ))}) 
     return response
 
+
+def simple_nested_query1(dataset, x, legend,  value, calculate, type_time, filters):
+    response = {}
+    key = []
+    response['xAxis']={}
+    response['series']=[]
+    res=None
+    where=filtros(filters)
+    
+    if(type_time==3):
+        key.append("Total")
+        query="SELECT "+legend+" as col, "+calculate+"("+value+") as val "
+        query+="FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by col LIMIT 15 "
+        rows=query_execute_big_query(query)
+        response['xAxis']['name'] = 'Total'
+        response['xAxis']['data'] = key
+    else:
+        if(type_time==1):
+            time=100
+        elif(type_time==2):
+            time=10000
+        elif(type_time==0):
+            time=1
+        elif(type_time==4):
+            time=7
+        query="SELECT CAST (("+x+"/"+str(time)+") AS Integer) as fecha FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by fecha order by fecha"
+        rows=query_execute_big_query(query)
+        for row in rows:
+            key.append(str(row['fecha']))
+        query="Select A.col, B.val "
+        query+="from "
+        query+="(Select A.fecha, B.col "
+        query+="from "
+        query+="(SELECT CAST (("+x+"/"+str(time)+") AS Integer) as fecha "
+        query+="FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by fecha) As A, "
+        query+="(SELECT "+legend+" as col "
+        query+="FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by col) As B) As A "
+        query+="left join "
+        query+="(SELECT "+legend+" as col, CAST (("+x+"/"+str(time)+") AS Integer) as fecha, "+calculate+"("+value+") as val "
+        query+="FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by col, fecha)As B on A.fecha=B.fecha and A.col=B.col "
+        query+="order by A.col, A.fecha "
+        #AQUI
+        print('---------------')
+        print(query)
+        print('---------------')
+        rows=query_execute_big_query(query)
+        response['xAxis']['name'] = translate(dataset, x)
+        #response['xAxis']['name'] =  x
+        response['xAxis']['data'] = key
+    list1= ""
+    name=""
+    if(len (rows)>0):
+        name=rows[0]['col']
+    for row in rows:
+        if((name!=row['col'])):
+            temp1=list(map(float, list1[:-1].split(',') ))
+            response['series'].append({"name":name, "data":(temp1)}) 
+            name=row['col']
+            list1=""
+        if(row['val']):
+            list1+=str(row['val'])+','
+        else:
+            list1+='0,'
+    if(len(list1)>0):
+        response['series'].append({"name":name, "data":list(map(float, list1[:-1].split(',') ))}) 
+    return response
+
+
 def multiple_agg_query(dataset, x, y, type_time, filters):
     response = {}
     key = []
