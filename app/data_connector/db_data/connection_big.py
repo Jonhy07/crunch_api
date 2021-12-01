@@ -43,7 +43,10 @@ def simple_query(dataset, x, value, calculate, filters):
 def simple_query1(dataset, x, value, calculate, filters):
     response = {}
     where=filtros(filters)
-    query="SELECT "+x+" as name, "+calculate+"("+value+") as value FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by ("+x+") LIMIT 15"
+    query="SELECT "+x+" as name, "+calculate+"("+value+") as value FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by ("+x+") LIMIT 10 ORDER BY"+ x
+    print('......')
+    print(query)
+    print('......')
     rows=query_execute_big_query(query)
     response['series'] = []
     value = []
@@ -69,7 +72,7 @@ def simple_nested_query(dataset, x, legend,  value, calculate, type_time, filter
     if(type_time==3):
         key.append("Total")
         query="SELECT "+legend+" as col, "+calculate+"("+value+") as val "
-        query+="FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by col"
+        query+="FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by col LIMIT 15 "
         rows=query_execute_big_query(query)
         response['xAxis']['name'] = 'Total'
         response['xAxis']['data'] = key
