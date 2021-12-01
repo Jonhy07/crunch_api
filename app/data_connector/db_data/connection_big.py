@@ -34,6 +34,19 @@ def simple_query(dataset, x, value, calculate, filters):
     rows=query_execute_big_query(query)
     response['series'] = []
     value = []
+    for row in rows:
+        value.append(row)
+    response['series'].append({'name': translate(dataset, x), 'data':value}) 
+    #response['series'].append({'name': x, 'data':value}) 
+    return response
+
+def simple_query1(dataset, x, value, calculate, filters):
+    response = {}
+    where=filtros(filters)
+    query="SELECT "+x+" as name, "+calculate+"("+value+") as value FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by ("+x+") LIMIT 15"
+    rows=query_execute_big_query(query)
+    response['series'] = []
+    value = []
     print('.....')
     for row in rows:
         print(row)
@@ -44,7 +57,6 @@ def simple_query(dataset, x, value, calculate, filters):
     print(response)
     print('.....')
     return response
-
 
 def simple_nested_query(dataset, x, legend,  value, calculate, type_time, filters):
     response = {}
