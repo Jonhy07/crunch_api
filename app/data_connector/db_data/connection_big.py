@@ -43,7 +43,7 @@ def simple_query(dataset, x, value, calculate, filters):
 def simple_query1(dataset, x, value, calculate, filters):
     response = {}
     where=filtros(filters)
-    query="SELECT "+x+" as name, "+calculate+"("+value+") as value FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by ("+x+") LIMIT 10 ORDER BY"+ x
+    query="SELECT "+x+" as name, "+calculate+"("+value+") as value FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by ("+x+") LIMIT 10 ORDER BY "+ x
     print('......')
     print(query)
     print('......')
