@@ -30,14 +30,14 @@ def filtros(filters):
 def simple_query(dataset, x, value, calculate, filters):
     response = {}
     where=filtros(filters)
-    query="SELECT "+x+", "+calculate+"("+value+") FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by ("+x+")"
+    query="SELECT "+x+" as name, "+calculate+"("+value+") as value FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by ("+x+")"
     rows=query_execute_big_query(query)
     response['series'] = []
     value = []
     for row in rows:
         value.append(row)
     response['series'].append({'name': translate(dataset, x), 'data':value}) 
-    #response['series'].append({'name': x, 'data':value}) 
+    #response['series'].append({'name': x, 'data':value})
     return response
 
 
