@@ -97,6 +97,4 @@ JSONStructure = Union[JSONArray, JSONObject]
 
 @router.post("/tabla2")
 async def im_tab2(arbitrary_json: JSONStructure = None):
-    print('..Prueba1....')
-    print(arbitrary_json)
     return {"received_data": arbitrary_json}

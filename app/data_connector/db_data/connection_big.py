@@ -222,8 +222,6 @@ def multiple_agg_query(dataset, x, y, type_time, filters):
         query+="  "+where
         query+="group by fecha "
         query+="order by fecha"
-
-    print(query)
     rows = query_execute_big_query(query)
     
     for row in rows:
@@ -256,9 +254,6 @@ def card_query(dataset, field, calculate, type, filters):
         query="SELECT "+calculate+"(DISTINCT("+field+")) FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where
     else:
         query="SELECT "+calculate+"("+field+") FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where
-    print('----------------------')
-    print(query)
-    print('----------------------')
     rows=query_execute_big_query(query)
     response = {}
     response['head']='card'
