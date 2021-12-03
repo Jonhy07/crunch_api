@@ -129,7 +129,7 @@ def simple_nested_query1(dataset, x, legend,  value, calculate, type_time, filte
     if(type_time==3):
         key.append("Total")
         query="SELECT "+legend+" as col, "+calculate+"("+value+") as val "
-        query+="FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by col LIMIT 15 "
+        query+="FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by col "
         rows=query_execute_big_query(query)
         response['xAxis']['name'] = 'Total'
         response['xAxis']['data'] = key
@@ -157,7 +157,7 @@ def simple_nested_query1(dataset, x, legend,  value, calculate, type_time, filte
         query+="left join "
         query+="(SELECT "+legend+" as col, CAST (("+x+"/"+str(time)+") AS Integer) as fecha, "+calculate+"("+value+") as val "
         query+="FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by col, fecha)As B on A.fecha=B.fecha and A.col=B.col "
-        query+="order by A.col, A.fecha "
+        query+="ORDER BY B.val DESC LIMIT 15"
         #AQUI
         print('---------------')
         print(query)
