@@ -157,11 +157,9 @@ def simple_nested_query1(dataset, x, legend,  value, calculate, type_time, filte
         query+="left join "
         query+="(SELECT "+legend+" as col, CAST (("+x+"/"+str(time)+") AS Integer) as fecha, "+calculate+"("+value+") as val "
         query+="FROM `"+settings.BIG_QUERY_DB_DATA_NAME+"."+dataset+"` "+where+" group by col, fecha)As B on A.fecha=B.fecha and A.col=B.col "
-        query+="ORDER BY B.val DESC LIMIT 15"
+        query+="ORDER BY A.col, A.fecha "
+        #query+="ORDER BY B.val DESC LIMIT 15"
         #AQUI
-        print('---------------')
-        print(query)
-        print('---------------')
         rows=query_execute_big_query(query)
         response['xAxis']['name'] = translate(dataset, x)
         #response['xAxis']['name'] =  x
@@ -261,6 +259,7 @@ def card_query(dataset, field, calculate, type, filters):
         response['data']=0
     else:
         response['data']=rows[0]['f0_']
+    response['data']= "{:,.2f}".format(response['data'])
     return response
 
 def tab_query(dataset, columns, type, filters):

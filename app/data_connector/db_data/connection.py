@@ -170,9 +170,8 @@ def card_query(dataset, field, calculate, type, filters):
     rows = res.fetchall()
     response = {}
     response['head']='card'
-    response['data']=rows[0][0]
+    response['data']= rows[0][0]
 
-    
     return response
 
 
