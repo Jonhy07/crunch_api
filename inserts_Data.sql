@@ -1,6 +1,5 @@
 --Tipos
-INSERT INTO public.type_user(
-	name)
+INSERT INTO public.type_user(name)
 	VALUES	('Generadores'),
 			('Grandes Usuarios'),
 			('Transportistas');

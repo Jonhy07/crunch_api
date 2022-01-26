@@ -6,6 +6,8 @@ from sqlalchemy import text
 
 from google.cloud import bigquery
 import json
+import pandas as pd
+import psycopg2
 
 #TRADUCIR
 SQLALCHEMY_DATABASE_URL = "postgresql://"+settings.ENDPOINT_DB_USER+":"+settings.ENDPOINT_DB_PASS+"@"+settings.ENDPOINT_DB_HOST+":"+settings.ENDPOINT_DB_PORT+"/"+settings.ENDPOINT_DB_NAME
@@ -38,8 +40,15 @@ def query_execute(query):
 
 #QUERY BIG_QUERY
 def query_execute_big_query(query):
-    client = bigquery.Client()
-    query_job = client.query(query)
-    rows = query_job.result()
-    records = [dict(row) for row in rows]
-    return records
+	client = bigquery.Client()
+	query_job = client.query(query)
+	rows = query_job.result()
+	records = [dict(row) for row in rows]
+	return records
+
+def query_execute_big_query_df(query):
+	client = bigquery.Client()
+	query_job = client.query(query)
+	rows = query_job.result()
+	records=rows.to_dataframe()
+	return records
