@@ -18,18 +18,31 @@ def get_notifications(store,fecha):
 	rows=query_execute_big_query(query)
 	return rows
 
-def get_notifications_details(store,fecha):
-	notificaciones_generales=get_notifications(store,fecha)
-	query="SELECT * FROM genio.notificaciones_detalle WHERE store_id = {} AND fecha = '{}'".format(store,fecha)
-	allN=query_execute_big_query_df(query)
-	contador =-1
-	for i in notificaciones_generales:
-		contador+=1
-		df_t=allN.loc[(allN['funcion']==i['funcion']),:][:2]
-		df_t.reset_index(drop=True,inplace=True)
-		notificaciones_generales[contador]['items']=df_t.to_dict('records')
-	return notificaciones_generales
+def get_notifications_details(store,fecha,funcion):
+	if funcion == None:
+		notificaciones_generales=get_notifications(store,fecha)
+		query="SELECT * FROM genio.notificaciones_detalle WHERE store_id = {} AND fecha = '{}'".format(store,fecha)
+		allN=query_execute_big_query_df(query)
+		contador =-1
+		for i in notificaciones_generales:
+			contador+=1
+			df_t=allN.loc[(allN['funcion']==i['funcion']),:][:10]
+			df_t.reset_index(drop=True,inplace=True)
+			notificaciones_generales[contador]['items']=df_t.to_dict('records')
+		return notificaciones_generales
+	else:
+		query="SELECT * FROM genio.notificaciones WHERE store_id = {} AND fecha = '{}' AND funcion='{}'".format(store,fecha,funcion)
+		general=query_execute_big_query(query)
+		query="SELECT * FROM genio.notificaciones_detalle WHERE store_id = {} AND fecha = '{}' AND funcion='{}'".format(store,fecha,funcion)
+		specific=query_execute_big_query(query)
+		general=general[0]
+		general['items']=specific
+		return general
 
+def get_last_date(store):
+	query="select fecha from genio.notificaciones where store_id = {} order by fecha desc limit 1".format(store)
+	general=query_execute_big_query(query)
+	return general
 
 def confirmacion_lectura(store,fecha,tipo,estado):
 	query="UPDATE genio.notificaciones SET util = {} WHERE store_id = {} AND funcion = '{}' AND fecha = '{}'".format(estado,store,tipo,fecha)
