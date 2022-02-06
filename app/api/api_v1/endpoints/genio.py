@@ -1,6 +1,6 @@
 from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException, Request
-from data_connector.genio_functions.connection import get_notifications,confirmacion_lectura,confirmacion_utilidad,cambio_estado,get_notifications_details,get_last_date
+from data_connector.genio_functions.connection import get_notifications,confirmacion_lectura,confirmacion_utilidad,cambio_estado,get_notifications_details,get_last_date,get_notifications_complete,semana_desde,mes_desde,historico_mensual
 from pydantic import BaseModel, Json
 from typing import Dict, Optional
 
@@ -13,7 +13,6 @@ class parametros(BaseModel):
     store:str
     fecha:str
     funcion:Optional[str]
-
 
 class confirmacion(BaseModel):
     store:str
@@ -29,6 +28,11 @@ class estado(BaseModel):
 class store(BaseModel):
     store:str
 
+class meses(BaseModel):
+    store:str
+    mes:int
+    anio:int
+
 @router.post("/notificaciones")
 async def notificaciones(jsonBody : parametros):
     return get_notifications(jsonBody.store,jsonBody.fecha)
@@ -36,6 +40,22 @@ async def notificaciones(jsonBody : parametros):
 @router.post("/notificaciones_detalle")
 async def notificaciones_detalle(jsonBody : parametros):
     return get_notifications_details(jsonBody.store,jsonBody.fecha,jsonBody.funcion)
+
+@router.post("/notificaciones_historico")
+async def notificaciones_historico(jsonBody : store):
+    return get_notifications_complete(jsonBody.store)
+
+@router.post("/semana_desde")
+async def notificaciones_semanales(jsonBody : parametros):
+    return semana_desde(jsonBody.store,jsonBody.fecha)
+
+@router.post("/historico_mensual")
+async def notificaciones_mes(jsonBody : meses):
+    return historico_mensual(jsonBody.store,jsonBody.anio,jsonBody.mes)
+
+@router.post("/mes_desde")
+async def notificaciones_mensuales(jsonBody : meses):
+    return mes_desde(jsonBody.store,jsonBody.mes,jsonBody.anio)
 
 @router.post("/confirmacion_lectura")
 async def notificaciones(jsonBody : confirmacion):
