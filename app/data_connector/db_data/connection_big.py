@@ -1,11 +1,11 @@
 from os import replace
+from this import d
 from elasticsearch import Elasticsearch
 from datetime import date, datetime
 from datetime import timedelta
 from core.config import settings
 from data_connector.db_translate.endpoint import translate, query_execute, query_execute_big_query
 import json
-
 
 def convert_date_to_int(value):
     if value[1].isdigit():
@@ -14,7 +14,6 @@ def convert_date_to_int(value):
         newvalue=value
     newvalue=(newvalue.replace("'",""))
     return (str(newvalue))
-
 
 def filtros(filters):
     where=''
@@ -25,7 +24,6 @@ def filtros(filters):
     if( len(where)>0):
         where=where[:-3]
     return where
-
 
 def simple_query(dataset, x, value, calculate, filters):
     response = {}
@@ -117,7 +115,6 @@ def simple_nested_query(dataset, x, legend,  value, calculate, type_time, filter
         response['series'].append({"name":name, "data":list(map(float, list1[:-1].split(',') ))}) 
     return response
 
-
 def simple_nested_query1(dataset, x, legend,  value, calculate, type_time, filters):
     response = {}
     key = []
@@ -182,7 +179,6 @@ def simple_nested_query1(dataset, x, legend,  value, calculate, type_time, filte
         response['series'].append({"name":name, "data":list(map(float, list1[:-1].split(',') ))}) 
     return response
 
-
 def multiple_agg_query(dataset, x, y, type_time, filters):
     response = {}
     key = []
@@ -244,7 +240,6 @@ def multiple_agg_query(dataset, x, y, type_time, filters):
         response['series'].append({"name":row.name, "data":value[c]})
     return response
 
-
 def card_query(dataset, field, calculate, type, filters):
     query=None
     where=filtros(filters)
@@ -288,7 +283,6 @@ def tab_query(dataset, columns, type, filters):
         query+="  "+where
         #query+="order by id"
 
-
 def tab_front_query(dataset, columns, type, filters, length, start ):
     where=filtros(filters)
     query="Select"
@@ -327,6 +321,20 @@ def tab_front_query(dataset, columns, type, filters, length, start ):
         response['data'].append(temp)
     return response
 
+def tab_front_query_sp(dataset, type, filters, length, start):
+    tienda=str(getattr(filters[0],'store'))
+    max=int(getattr(filters[0],'max'))
+    min=int(getattr(filters[0],'min'))
+    query="CALL Stage.{}({},{},{})".format(dataset,tienda,int(max),int(min))
+    rows = query_execute_big_query(query)
+    response = {}
+    response['data']=[]
+    for row in rows:
+        temp=[]
+        for atribut in row:
+            temp.append(str(row[atribut]))
+        response['data'].append(temp)
+    return response
 
 def prueba_big():
     query = (
