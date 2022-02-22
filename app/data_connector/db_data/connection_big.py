@@ -310,7 +310,6 @@ def tab_front_query(dataset, columns, type, filters, length, start ):
         query+="  "+where
         query+=" LIMIT "+str(length)
         query+=" OFFSET  "+str(start)
-
     rows = query_execute_big_query(query)
     response = {}
     response['data']=[]
@@ -325,7 +324,12 @@ def tab_front_query_sp(dataset, type, filters, length, start):
     tienda=str(getattr(filters[0],'store'))
     max=int(getattr(filters[0],'max'))
     min=int(getattr(filters[0],'min'))
-    query="CALL Stage.{}({},{},{})".format(dataset,tienda,int(max),int(min))
+    marketplace=str(getattr(filters[0],'Marketplace'))
+    plataforma=str(getattr(filters[0],'Plataforma'))
+    query="CALL Stage.{}({},{},{},'{}','{}')".format(dataset,tienda,int(max),int(min),str(marketplace),str(plataforma))
+    print('*****************************')
+    print(query)
+    print('*****************************')
     rows = query_execute_big_query(query)
     response = {}
     response['data']=[]

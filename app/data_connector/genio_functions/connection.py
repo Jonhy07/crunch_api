@@ -127,3 +127,21 @@ def cambio_estado(store,tipo,estado):
 		return 'success'
 	except:
 		return 'error'
+
+def agrupacion_por_tienda(store,fecha_min,fecha_max):
+	query1="SELECT DxIdDataFrame FROM Stage.AuxDimVentas WHERE DnStoreId = {} AND DnPurchaseDate >= {} AND DnPurchaseDate <= {} GROUP BY DxIdDataFrame".format(store,fecha_min,fecha_max)
+	DxIdDataframe=query_execute_big_query(query1)
+	plataformas=[]
+	for i in DxIdDataframe:
+		plataformas.append(i['DxIdDataFrame'])
+
+	query2="SELECT DxMarketplace FROM Stage.AuxDimVentas WHERE DnStoreId = {} AND DnPurchaseDate >= {} AND DnPurchaseDate <= {} GROUP BY DxMarketplace".format(store,fecha_min,fecha_max)
+	DxIdDataframe=query_execute_big_query(query2)
+	marketplace=[]
+	for i in DxIdDataframe:
+		marketplace.append(i['DxMarketplace'])
+	print('--')
+	print(query1)
+	print(query2)
+	print('--')
+	return {'plataformas':plataformas,'marketplace':marketplace}

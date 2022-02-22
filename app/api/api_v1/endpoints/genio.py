@@ -1,6 +1,6 @@
 from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException, Request
-from data_connector.genio_functions.connection import get_notifications,confirmacion_lectura,confirmacion_utilidad,cambio_estado,get_notifications_details,get_last_date,get_notifications_complete,semana_desde,mes_desde,historico_mensual
+from data_connector.genio_functions.connection import get_notifications,confirmacion_lectura,confirmacion_utilidad,cambio_estado,get_notifications_details,get_last_date,get_notifications_complete,semana_desde,mes_desde,historico_mensual,agrupacion_por_tienda
 from pydantic import BaseModel, Json
 from typing import Dict, Optional
 
@@ -32,6 +32,11 @@ class meses(BaseModel):
     store:str
     mes:int
     anio:int
+
+class store_dos_fechas(BaseModel):
+    store:str
+    fecha_min:str
+    fecha_max:str
 
 @router.post("/notificaciones")
 async def notificaciones(jsonBody : parametros):
@@ -72,3 +77,7 @@ async def notificaciones(jsonBody : estado):
 @router.post("/ultima_fecha")
 async def last_date(jsonBody : store):
     return get_last_date(jsonBody.store)
+
+@router.post("/agrupacion_por_tienda")
+async def agrupacion_tienda(jsonBody : store_dos_fechas):
+    return agrupacion_por_tienda(jsonBody.store,jsonBody.fecha_min,jsonBody.fecha_max)

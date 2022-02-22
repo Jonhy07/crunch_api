@@ -18,6 +18,8 @@ class filter_sp(BaseModel):
     store:str
     min:str
     max:str
+    Marketplace:str
+    Plataforma:str
 
 class column(BaseModel):
     field:str
@@ -86,11 +88,9 @@ def im_card(jsonBody : JsonTab):
 async def im_tab(jsonBody : JsonTab):
     return tab_query(jsonBody.dataset, jsonBody.columns, jsonBody.type, jsonBody.filters)
 
-
 @router.post("/tab_front")
 def im_tab_front(jsonBody : JsonTab_Front):
     return tab_front_query(jsonBody.dataset, jsonBody.columns, jsonBody.type, jsonBody.filters,jsonBody.length, jsonBody.start )
-
 
 @router.post("/tab_front_sp")
 def im_tab_front(jsonBody : JsonTab_FrontSp):
